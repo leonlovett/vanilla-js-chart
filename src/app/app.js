@@ -1,6 +1,7 @@
-import * as data from '../data/ibm.json'
+import * as chartData from '../data/ibm.json'
 import { Chart } from "./chart";
 
+const data = Object.assign([], chartData);
 transformData();
 
 const chart = new Chart(data);

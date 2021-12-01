@@ -461,32 +461,33 @@ function hmrAcceptRun(bundle, id) {
 },{}],"d9j9x":[function(require,module,exports) {
 var _ibmJson = require("../data/ibm.json");
 var _chart = require("./chart");
+const data = Object.assign([], _ibmJson);
 transformData();
-const chart = new _chart.Chart(_ibmJson);
+const chart = new _chart.Chart(data);
 chart.drawChart();
 window.addEventListener('resize', ()=>{
     chart.drawChart();
 });
 function transformData() {
-    data = _ibmJson.map((price)=>{
+    data = data.map((price)=>{
         price.sortDate = new Date(price.Date);
         return price;
     });
-    data = _ibmJson.sort((a, b)=>b.sortDate - a.sortDate
+    data = data.sort((a, b)=>b.sortDate - a.sortDate
     );
     calculateAverages();
 }
 function calculateAverages() {
-    _ibmJson.forEach((day, idx)=>{
+    data.forEach((day, idx)=>{
         const start = idx <= 19 ? 0 : idx - 20;
-        const dayRange = _ibmJson.slice(start, idx).map((x)=>x.Close
+        const dayRange = data.slice(start, idx).map((x)=>x.Close
         );
         let total;
         if (dayRange.length > 0) total = dayRange.reduce((prev, curr)=>prev + curr
         );
         day.movingAvg = total / dayRange.length;
     });
-    _ibmJson.splice(0, 1);
+    data.splice(0, 1);
 }
 
 },{"../data/ibm.json":"2uZNu","./chart":"dBXnG"}],"2uZNu":[function(require,module,exports) {
