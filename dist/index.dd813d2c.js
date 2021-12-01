@@ -461,7 +461,7 @@ function hmrAcceptRun(bundle, id) {
 },{}],"d9j9x":[function(require,module,exports) {
 var _ibmJson = require("../data/ibm.json");
 var _chart = require("./chart");
-const data = Object.assign([], _ibmJson);
+let data = Object.assign([], _ibmJson);
 transformData();
 const chart = new _chart.Chart(data);
 chart.drawChart();
@@ -514,8 +514,8 @@ class Chart {
         this.drawPoints();
     }
     setCanvasSize() {
-        this.canvas.width = window.innerWidth - 3;
-        this.canvas.height = window.innerHeight - 3;
+        this.canvas.width = window.innerWidth - this.margins.right;
+        this.canvas.height = window.innerHeight - this.margins.top;
     }
     drawXAxis() {
         this.ctx.beginPath();
@@ -582,9 +582,9 @@ parcelHelpers.export(exports, "MARGINS", ()=>MARGINS
 );
 const MARGINS = {
     left: 100,
-    top: 50,
+    top: 100,
     right: 100,
-    bottom: 50
+    bottom: 100
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"10XmT":[function(require,module,exports) {

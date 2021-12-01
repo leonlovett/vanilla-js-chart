@@ -1,6 +1,6 @@
 export const MARGINS = {
     left: 100,
-    top: 50,
+    top: 100,
     right: 100,
-    bottom: 50
+    bottom: 100
 };

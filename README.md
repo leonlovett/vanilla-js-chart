@@ -7,3 +7,4 @@ This is a simple chart written using vanilla JavaScript and HTML 5 canvas.
 - Install dependencies `npm install`
 - Start the app for development `npm run start`
 - Build the app for production `npm run build`
+- Open `http://localhost:1234` in your web browser
