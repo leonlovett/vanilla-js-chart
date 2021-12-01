@@ -1,7 +1,7 @@
 import * as chartData from '../data/ibm.json'
 import { Chart } from "./chart";
 
-const data = Object.assign([], chartData);
+let data = Object.assign([], chartData);
 transformData();
 
 const chart = new Chart(data);
