@@ -21,7 +21,7 @@ export class Chart {
 
     setCanvasSize() {
         this.canvas.width = window.innerWidth * .8;
-        this.canvas.height = window.innerHeight * .8;
+        this.canvas.height = window.innerHeight * .9;
     }
 
     drawXAxis() {
