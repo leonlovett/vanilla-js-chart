@@ -21,8 +21,8 @@ export class Point {
     getYPoint(value) {
         const closingValues = this.data.map(x => x.movingAvg)
         const max = Math.round(Math.max(...closingValues));
-        const chartHeight = this.canvas.height - this.margins.top - this.margins.bottom;
-        const factor = value / (max);
+        const chartHeight = this.canvas.height - this.margins.top;
+        const factor = value / max;
         return this.canvas.height - chartHeight * factor;
     }
 }

@@ -500,6 +500,7 @@ parcelHelpers.export(exports, "Chart", ()=>Chart
 );
 var _constants = require("../models/constants");
 var _point = require("./point");
+var _axis = require("./axis");
 class Chart {
     canvas = document.querySelector('#chart');
     ctx = this.canvas.getContext('2d');
@@ -514,38 +515,34 @@ class Chart {
         this.drawPoints();
     }
     setCanvasSize() {
-        this.canvas.width = window.innerWidth - this.margins.right;
-        this.canvas.height = window.innerHeight - this.margins.top;
+        this.canvas.width = window.innerWidth * 0.8;
+        this.canvas.height = window.innerHeight * 0.8;
     }
     drawXAxis() {
-        this.ctx.beginPath();
-        this.ctx.moveTo(100, this.canvas.height - this.margins.top);
-        this.ctx.lineTo(this.canvas.width, this.canvas.height - this.margins.bottom);
-        this.ctx.stroke();
+        const xAxis = new _axis.Axis('horizontal', this.canvas, this.data.map((x)=>x.sortDate
+        ), this.ctx);
+        xAxis.drawBorder();
+        xAxis.calculateRanges();
+        xAxis.drawScale();
     }
     drawYAxis() {
-        this.ctx.beginPath();
-        this.ctx.moveTo(100, this.canvas.height - this.margins.bottom);
-        this.ctx.lineTo(100, 50);
-        this.ctx.stroke();
-        const closingValues = this.data.map((x)=>x.movingAvg
-        );
-        const max = Math.round(Math.max(...closingValues));
-        this.ctx.font = '18px serif';
-        this.ctx.fillText(0, 80, this.canvas.height - this.margins.top / 2);
-        this.ctx.fillText(max, 60, 55);
+        const yAxis = new _axis.Axis('vertical', this.canvas, this.data.map((x)=>x.movingAvg
+        ), this.ctx);
+        yAxis.drawBorder();
+        yAxis.calculateRanges();
+        yAxis.drawScale();
     }
     drawPoints() {
-        const factor = (this.canvas.width - 100) / this.data.length;
+        const factor = (this.canvas.width - 90) / this.data.length;
         this.data.forEach((day, idx)=>{
-            const x = idx * factor + this.margins.left;
+            const x = idx * factor + this.margins.left + factor;
             const point = new _point.Point(this.ctx, this.canvas, x, day, this.data);
             point.drawPoint();
         });
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","../models/constants":"hTtwU","./point":"10XmT"}],"ciiiV":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","../models/constants":"hTtwU","./point":"10XmT","./axis":"cViSn"}],"ciiiV":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -582,7 +579,7 @@ parcelHelpers.export(exports, "MARGINS", ()=>MARGINS
 );
 const MARGINS = {
     left: 100,
-    top: 100,
+    top: 10,
     right: 100,
     bottom: 100
 };
@@ -611,12 +608,61 @@ class Point {
         const closingValues = this.data.map((x)=>x.movingAvg
         );
         const max = Math.round(Math.max(...closingValues));
-        const chartHeight = this.canvas.height - this.margins.top - this.margins.bottom;
+        const chartHeight = this.canvas.height - this.margins.top;
         const factor = value1 / max;
         return this.canvas.height - chartHeight * factor;
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","../models/constants":"hTtwU"}]},["5tD9r","d9j9x"], "d9j9x", "parcelRequirec86a")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","../models/constants":"hTtwU"}],"cViSn":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Axis", ()=>Axis
+);
+var _constants = require("../models/constants");
+class Axis {
+    margins = _constants.MARGINS;
+    currencyOptions = {
+        style: 'currency',
+        currency: 'usd'
+    };
+    region = 'en-us';
+    min;
+    mid;
+    max;
+    constructor(orientation, canvas, allValues, ctx){
+        this.orientation = orientation;
+        this.canvas = canvas;
+        this.allValues = allValues;
+        this.ctx = ctx;
+    }
+    drawBorder() {
+        const xBegin = 100;
+        const yBegin = this.canvas.height - 2;
+        const xEnd = this.orientation === 'vertical' ? 100 : this.canvas.width;
+        const yEnd = this.orientation === 'vertical' ? 0 : this.canvas.height - 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(xBegin, yBegin);
+        this.ctx.lineTo(xEnd, yEnd);
+        this.ctx.stroke();
+    }
+    calculateRanges() {
+        if (this.orientation === 'vertical') {
+            this.min = new Number(0).toLocaleString(this.region, this.currencyOptions);
+            this.max = Math.max(...this.allValues).toLocaleString(this.region, this.currencyOptions);
+            this.mid = (Number.parseFloat(this.max.replace('$', '')) / 2).toLocaleString(this.region, this.currencyOptions);
+        }
+    }
+    drawScale() {
+        const begin = this.orientation === 'vertical' ? 30 : this.canvas.width;
+        const end = this.orientation === 'vertical' ? this.canvas.height : 100;
+        this.ctx.font = '18px serif';
+        this.ctx.fillText(this.min, begin, end);
+        this.ctx.fillText(this.mid, begin, (end + 20) / 2);
+        this.ctx.fillText(this.max, begin, 20);
+    }
+}
+
+},{"../models/constants":"hTtwU","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}]},["5tD9r","d9j9x"], "d9j9x", "parcelRequirec86a")
 
 //# sourceMappingURL=index.dd813d2c.js.map

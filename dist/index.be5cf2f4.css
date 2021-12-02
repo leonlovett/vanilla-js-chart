@@ -6,4 +6,13 @@ header {
     text-align: center;
 }
 
+.container {
+    display: grid;
+    grid-template-columns: 10% auto 10%;
+}
+
+.inner {
+    grid-column-start: 2;
+}
+
 /*# sourceMappingURL=index.be5cf2f4.css.map */

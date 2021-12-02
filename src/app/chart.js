@@ -1,5 +1,6 @@
 import { MARGINS } from "../models/constants";
 import { Point } from "./point";
+import { Axis } from "./axis";
 
 export class Chart {
 
@@ -19,35 +20,28 @@ export class Chart {
     }
 
     setCanvasSize() {
-        this.canvas.width = window.innerWidth - this.margins.right;
-        this.canvas.height = window.innerHeight - this.margins.top;
+        this.canvas.width = window.innerWidth * .8;
+        this.canvas.height = window.innerHeight * .8;
     }
 
     drawXAxis() {
-        this.ctx.beginPath();
-        this.ctx.moveTo(100, this.canvas.height - this.margins.top);
-        this.ctx.lineTo(this.canvas.width, this.canvas.height - this.margins.bottom);
-        this.ctx.stroke();
+        const xAxis = new Axis('horizontal', this.canvas, this.data.map(x => x.sortDate), this.ctx);
+        xAxis.drawBorder();
+        xAxis.calculateRanges();
+        xAxis.drawScale();
     }
 
     drawYAxis() {
-        this.ctx.beginPath();
-        this.ctx.moveTo(100, this.canvas.height - this.margins.bottom);
-        this.ctx.lineTo(100, 50);
-        this.ctx.stroke();
-
-        const closingValues = this.data.map(x => x.movingAvg)
-        const max = Math.round(Math.max(...closingValues));
-
-        this.ctx.font = '18px serif'
-        this.ctx.fillText(0, 80, this.canvas.height - this.margins.top / 2)
-        this.ctx.fillText(max, 60, 55)
+        const yAxis = new Axis('vertical', this.canvas, this.data.map(x => x.movingAvg), this.ctx);
+        yAxis.drawBorder();
+        yAxis.calculateRanges();
+        yAxis.drawScale();
     }
 
     drawPoints() {
-        const factor = (this.canvas.width - 100) / this.data.length;
+        const factor = (this.canvas.width - 90) / this.data.length;
         this.data.forEach((day, idx) => {
-            const x = idx * factor + this.margins.left;
+            const x = idx * factor + this.margins.left + factor;
             const point = new Point(this.ctx, this.canvas, x, day, this.data)
             point.drawPoint();
         })
